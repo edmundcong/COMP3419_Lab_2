@@ -20,8 +20,6 @@ void draw() {
   background(background);
   squareSetUp();
 
-  // box setup
-
   stroke(255);
   for (Sphere currBall : balls) {
     pushMatrix();
@@ -38,8 +36,8 @@ void draw() {
 }
 
 class Sphere {
-  PVector location = new PVector((int) random(100, 500), (int) random(100, 300), random(0, 1));
-  PVector velocity = new PVector(1.5, 2.1, 1);
+  PVector location = new PVector(mouseX, mouseY, random(0, 1));
+  PVector velocity = new PVector(random(-5, 5), random(-3.5, 3.5), 1);
   PVector gravity = new PVector(0, 0.2);
   String fileName;
   PImage image;
@@ -71,17 +69,15 @@ void cornerDetection(Sphere currBall) {
 }
 
 void squareSetUp() {
-  // background square
-
-  line(0, 0, -500, width, 0, -500);
-  line(0, 0, -500, 0, height, -500);
-  line(0, height, -500, width, height, -500);
-  line(width, height, -500, width, 0, -500);
-
-  // perspective lines
-
+  // create perspective lines
   line(0, 0, -500, 0, 0, 0);
   line(width, 0, -500, width, 0, 0);
   line(0, height, -500, 0, height, 0);
   line(width, height, -500, width, height, 0);
+  
+  // create the background square
+  line(0, 0, -500, width, 0, -500);
+  line(0, 0, -500, 0, height, -500);
+  line(0, height, -500, width, height, -500);
+  line(width, height, -500, width, 0, -500);
 }
