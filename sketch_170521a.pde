@@ -1,52 +1,58 @@
-Sphere init_ball;
 ArrayList<Sphere> balls = new ArrayList();
-// end of variables
+PImage background;
+String[] images = {"earth.jpg", "moon.jpg", "jupiter.jpg", "mars.jpg", "pluto.jpg", "saturn.jpg", "neptune.jpg"};
 
 float gravity = 0.1;
 
 void setup() {
-  init_ball = new Sphere((int) random(0, 640), (int) random(0, 480), 1);
-  balls.add(init_ball);
   size (640, 480, P3D);
   smooth();
+  background = loadImage("background.jpg");
 }
 
 void mouseClicked() {
-  Sphere temp_ball = new Sphere((int) random(0, 640), (int) random(0, 480), 1);
+  int randFile = (int) random(0, images.length);
+  Sphere temp_ball = new Sphere(images[randFile]);
   balls.add(temp_ball);
 }
 
 void draw() {
-  background(1);
-
+  background(background);
   squareSetUp();
 
   // box setup
 
   stroke(255);
   for (Sphere currBall : balls) {
+    pushMatrix();
     currBall.location.add(currBall.velocity);
     currBall.velocity.add(currBall.gravity);
     translate (currBall.location.x, currBall.location.y, -currBall.location.z);
-    sphere(50);
-    noFill();
-
+    currBall.sphereShape = createShape(SPHERE, 50);
+    currBall.sphereShape.setStroke(false);
+    currBall.sphereShape.setTexture(currBall.image);
+    shape(currBall.sphereShape);
     cornerDetection(currBall);
+    popMatrix();
   }
 }
 
 class Sphere {
-  PVector location = new PVector(100, 100, 1);
+  PVector location = new PVector((int) random(100, 500), (int) random(100, 300), random(0, 1));
   PVector velocity = new PVector(1.5, 2.1, 1);
   PVector gravity = new PVector(0, 0.2);
+  String fileName;
+  PImage image;
+  PShape sphereShape;
 
-  Sphere(int x, int y, int z) {
-    x = y = z = 5;
+  Sphere(String fileNameArg) {
+    fileName = fileNameArg;
+    image = loadImage(fileName);
   }
 }
 
 void cornerDetection(Sphere currBall) {
-  if (currBall.location.x>width-50) {
+  if (currBall.location.x>width-50 || currBall.location.x<50) {
     currBall.velocity.x *= -0.95;
   }
 
@@ -54,25 +60,14 @@ void cornerDetection(Sphere currBall) {
     currBall.velocity.y *= -0.95;
   }
 
-  if (currBall.location.z>500) {
-    currBall.velocity.z *= -1;
-  }
-
-  if (currBall.location.x<50) {
-    currBall.velocity.x *= -0.95;
-  }
-
   if (currBall.location.y<50) {
     currBall.velocity.y *= -0.95;
     currBall.location.y = height;
   }
 
-  if (currBall.location.z<0) {
+  if (currBall.location.z<0 || currBall.location.z>500) {
     currBall.velocity.z *= -1;
   }
-  //println("x speed: " + currBall.xSpeed);
-  //println("y speed: " + currBall.ySpeed);
-  //println("z speed: " + currBall.zSpeed);
 }
 
 void squareSetUp() {
